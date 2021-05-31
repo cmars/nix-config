@@ -137,6 +137,25 @@
     clock24 = true;
     keyMode = "vi";
     shortcut = "a";
+    extraConfig = ''
+      # THEME
+      set -g status-bg black
+      set -g status-fg white
+      set -g status-interval 60
+      set -g status-left-length 30
+      set -g status-left '#[fg=green](#S) #(whoami)@#H#[default]'
+      set -g status-right '#[fg=yellow]#(cut -d " " -f 1-3 /proc/loadavg)#[default] #[fg=blue]%H:%M#[default]'
+      
+      #--Key-Bindings-----------------------------------------------------------------
+      bind | split-window -h
+      bind _ split-window -v
+      bind h select-pane -L
+      bind j select-pane -D
+      bind k select-pane -U
+      
+      # l is for last window by default
+      bind l select-pane -R
+    '';
   };
 
   #programs.vscode = {
