@@ -92,10 +92,6 @@
     firefox
     ungoogled-chromium
     zoom-us
-
-    # Containers
-    docker-compose
-    kubectl helm
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
