@@ -98,8 +98,7 @@
       noremap <C-L> <C-W>l
       
       " tab indent with 4 spaces
-      set expandtab
-      set tabstop=4
+      set expandtab tabstop=4 shiftwidth=4
       
       " case insensitive searching, unless mixed case
       set ignorecase
