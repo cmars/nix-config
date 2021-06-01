@@ -14,11 +14,11 @@
   nixpkgs.config = {
     allowUnfree = true;
   };
-#  nixpkgs.overlays = [ (
-#    self: super:
-#    let local = import "/home/c/Projects/nixpkgs" {};
-#    in { lxd = local.lxd; }
-#  ) ];
+  nixpkgs.overlays = [ (
+    self: super:
+    let unstable = import <nixos-unstable> {};
+    in { k3s = unstable.k3s; }
+  ) ];
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
