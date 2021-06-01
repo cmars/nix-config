@@ -98,6 +98,7 @@
       noremap <C-L> <C-W>l
       
       " tab indent with 4 spaces
+      set expandtab
       set tabstop=4
       
       " case insensitive searching, unless mixed case
@@ -137,6 +138,7 @@
     clock24 = true;
     keyMode = "vi";
     shortcut = "a";
+    escapeTime = 5;  # Default 500ms wrecks neovim
     extraConfig = ''
       # THEME
       set -g status-bg black
