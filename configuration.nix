@@ -14,11 +14,6 @@
   nixpkgs.config = {
     allowUnfree = true;
   };
-  nixpkgs.overlays = [ (
-    self: super:
-    let unstable = import <nixos-unstable> {};
-    in { k3s = unstable.k3s; }
-  ) ];
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
@@ -28,11 +23,19 @@
   boot.kernelModules = [ "vhost_vsock" ];
   boot.extraModprobeConfig = "options kvm_intel nested=1";
 
+  # Automatic upgrades
+  system.autoUpgrade = {
+    enable = true;
+    allowReboot = true;
+    dates = "04:00";
+    randomizedDelaySec = "30min";
+  };
+
   networking.hostName = "nix-slate"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Set your time zone.
-  time.timeZone = "UTC";
+  time.timeZone = "US/Central";
 
   # The global useDHCP flag is deprecated, therefore explicitly set to false here.
   # Per-interface useDHCP will be mandatory in the future, so this generated config
@@ -58,7 +61,7 @@
   # Enable the GNOME 3 Desktop Environment.
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.displayManager.gdm.wayland = true;
-  services.xserver.desktopManager.gnome3.enable = true;
+  services.xserver.desktopManager.gnome.enable = true;
   
 
   # Configure keymap in X11
@@ -92,11 +95,6 @@
   environment.systemPackages = with pkgs; [
     # Tools
     wget vim git bash
-
-    # Browsers
-    firefox
-    ungoogled-chromium
-    zoom-us
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
