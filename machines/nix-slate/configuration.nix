@@ -75,7 +75,16 @@
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
-  services.avahi = { enable = true; nssmdns = true; };
+  services.avahi = {
+    enable = true;
+    nssmdns = true;
+    publish = {
+      enable = true;
+      domain = true;
+      addresses = true;
+      userServices = true;
+    };
+  };
 
   # Enable sound.
   sound.enable = true;
@@ -95,15 +104,18 @@
   environment.systemPackages = with pkgs; [
     # Tools
     wget vim git bash
+
+    # Enable screen sharing in wayland
+    xdg-desktop-portal-gtk
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
-  programs.gnupg.agent = {
-    enable = true;
-    enableSSHSupport = true;
-  };
+  # programs.gnupg.agent = {
+  #   enable = true;
+  #   enableSSHSupport = true;
+  # };
 
   # List services that you want to enable:
 
@@ -112,6 +124,8 @@
 
   # k8s
   services.k3s.enable = true;
+
+  services.trezord.enable = true;
 
   # Virtualization
   virtualisation.lxd.enable = true;
