@@ -20,12 +20,24 @@
   home.stateVersion = "21.03";
 
   home.packages = with pkgs; [
-    apg
-    borgbackup
     docker-compose
-    gopass
     kubectl
     helm
+
+    apg
+    borgbackup
+    gopass
+    sshfs
+    unzip
+    xclip
+
+    trezor-suite
+    trezor_agent
+
+    firefox
+    ungoogled-chromium
+    tdesktop
+    zoom-us
   ];
 
   home.sessionPath = [
@@ -126,6 +138,10 @@
       let g:NERDTreeHighlightCursorline = 1
       let g:nerdtree_sync_cursorline = 1
     '';
+
+    # Disable Python2 features, which break the build if left enabled >= 21.05
+    withPython = false;
+    extraPythonPackages = [];
   };
 
   programs.ssh = {
@@ -163,16 +179,16 @@
   #  enable = true;
   #};
 
-  programs.zathura = {
+  services.gpg-agent = {
     enable = true;
+    defaultCacheTtl = 900;
+    enableSshSupport = true;
+    maxCacheTtl = 900;
+    maxCacheTtlSsh = 900;
+    sshKeys = [ "6B787E5FB493FA4FD0095D106DEC2758ACD5A973" ];
   };
 
-  #services.gpg-agent = {
-  #  enable = true;
-  #  defaultCacheTtl = 900;
-  #  enableSshSupport = true;
-  #  maxCacheTtl = 900;
-  #  maxCacheTtlSsh = 900;
-  #  sshKeys = [ "6B787E5FB493FA4FD0095D106DEC2758ACD5A973" ];
-  #};
+  xdg.enable=true;
+  xdg.mime.enable=true;
+  targets.genericLinux.enable=true;
 }
