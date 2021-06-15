@@ -45,6 +45,8 @@ in {
   networking.useDHCP = false;
   networking.interfaces.wlp2s0.useDHCP = true;
 
+  networking.networkmanager.wifi.macAddress = "random";
+
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
@@ -111,7 +113,19 @@ in {
     xdg-desktop-portal-gtk
 
     unstable.stevenblack-blocklist
+
+    powertop
   ];
+
+  # Run Powertop auto-tune once on startup
+  systemd.services.powertop = {
+    description = "Powertop auto-tune";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.powertop}/bin/powertop --auto-tune";
+    };
+    wantedBy = [ "multi-user.target" ];
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -125,9 +139,6 @@ in {
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
-
-  # k8s
-  services.k3s.enable = true;
 
   services.trezord.enable = true;
 
