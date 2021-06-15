@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ lib, config, pkgs, ... }:
 
 let
   unstable = import <nixos-unstable> { };
@@ -43,7 +43,7 @@ in {
   # Per-interface useDHCP will be mandatory in the future, so this generated config
   # replicates the default behaviour.
   networking.useDHCP = false;
-  networking.interfaces.wlp2s0.useDHCP = true;
+  networking.interfaces.wlp2s0.useDHCP = false;  # NetworkManager handles DHCP on this machine
 
   networking.networkmanager.wifi.macAddress = "random";
 
@@ -61,12 +61,10 @@ in {
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
-
   # Enable the GNOME 3 Desktop Environment.
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.displayManager.gdm.wayland = true;
   services.xserver.desktopManager.gnome.enable = true;
-  
 
   # Configure keymap in X11
   # services.xserver.layout = "us";
@@ -124,8 +122,11 @@ in {
       Type = "oneshot";
       ExecStart = "${pkgs.powertop}/bin/powertop --auto-tune";
     };
-    wantedBy = [ "multi-user.target" ];
+    after = [ "sysinit.target" ];
   };
+
+  # Do not block boot on network being up
+  systemd.services.NetworkManager-wait-online.wantedBy = lib.mkForce [ ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -145,7 +146,7 @@ in {
   # Virtualization
   virtualisation.lxd.enable = true;
   virtualisation.docker.enable = true;
-  virtualisation.libvirtd.enable = true;
+  #virtualisation.libvirtd.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
