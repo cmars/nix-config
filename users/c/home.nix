@@ -53,6 +53,11 @@
     enableVteIntegration = true;
     historyControl = [ "erasedups" "ignoredups" ];
     initExtra = ''
+      # Restart gpg agent
+      gpg-connect-agent /bye
+      export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+
+      # Vi mode for searching/editing command line history
       set -o vi
     '';
   };
@@ -138,10 +143,6 @@
       let g:NERDTreeHighlightCursorline = 1
       let g:nerdtree_sync_cursorline = 1
     '';
-
-    # Disable Python2 features, which break the build if left enabled >= 21.05
-    withPython = false;
-    extraPythonPackages = [];
   };
 
   programs.ssh = {
