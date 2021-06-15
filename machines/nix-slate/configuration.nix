@@ -4,7 +4,9 @@
 
 { config, pkgs, ... }:
 
-{
+let
+  unstable = import <nixos-unstable> { };
+in {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
@@ -42,6 +44,8 @@
   # replicates the default behaviour.
   networking.useDHCP = false;
   networking.interfaces.wlp2s0.useDHCP = true;
+
+  networking.networkmanager.wifi.macAddress = "random";
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
@@ -107,7 +111,21 @@
 
     # Enable screen sharing in wayland
     xdg-desktop-portal-gtk
+
+    unstable.stevenblack-blocklist
+
+    powertop
   ];
+
+  # Run Powertop auto-tune once on startup
+  systemd.services.powertop = {
+    description = "Powertop auto-tune";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.powertop}/bin/powertop --auto-tune";
+    };
+    wantedBy = [ "multi-user.target" ];
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -121,9 +139,6 @@
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
-
-  # k8s
-  services.k3s.enable = true;
 
   services.trezord.enable = true;
 
@@ -140,6 +155,10 @@
 
   # Allow container networking to work with k8s
   networking.firewall.extraCommands = "iptables -A INPUT -s 10.0.0.0/8 -j ACCEPT";
+
+  networking.hostFiles = [
+    "${unstable.stevenblack-blocklist}/hosts"
+  ];
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
